@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @SpringBootApplication
@@ -36,6 +37,7 @@ public class EbankingBackendApplication {
 
             customerRepository.findAll().forEach(cust -> {
                 CurrentAccount currentAccount = new CurrentAccount();
+                currentAccount.setId(UUID.randomUUID().toString());
                 currentAccount.setCurrency(AccountCurrency.EUR);
                 currentAccount.setStatus(AccountStatus.CREATED);
                 currentAccount.setBalance(Math.random() * 90000);
@@ -45,6 +47,7 @@ public class EbankingBackendApplication {
                 bankAccountRepository.save(currentAccount);
 
                 SavingAccount savingAccount = new SavingAccount();
+                savingAccount.setId(UUID.randomUUID().toString());
                 savingAccount.setCurrency(AccountCurrency.EUR);
                 savingAccount.setStatus(AccountStatus.CREATED);
                 savingAccount.setBalance(Math.random() * 90000);

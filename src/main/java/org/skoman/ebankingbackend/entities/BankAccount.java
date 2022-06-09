@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.skoman.ebankingbackend.enums.AccountCurrency;
 import org.skoman.ebankingbackend.enums.AccountStatus;
 
@@ -17,13 +18,17 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class BankAccount {
+@SuperBuilder
+public abstract class BankAccount {
     @Id
     private String id;
     private double balance;
     private Date createdAt;
+
+    @Enumerated(value = EnumType.STRING)
     private AccountStatus status;
+
+    @Enumerated(value = EnumType.STRING)
     private AccountCurrency currency;
 
     @ManyToOne
