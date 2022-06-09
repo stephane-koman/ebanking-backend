@@ -1,0 +1,6 @@
+org/skoman/ebankingbackend/entities/CustomerTest.class
+org/skoman/ebankingbackend/entities/SavingAccountTest.class
+org/skoman/ebankingbackend/entities/CurrentAccountTest.class
+org/skoman/ebankingbackend/EbankingBackendApplicationTests.class
+org/skoman/ebankingbackend/entities/BankAccountTest.class
+org/skoman/ebankingbackend/entities/AccountOperationTest.class

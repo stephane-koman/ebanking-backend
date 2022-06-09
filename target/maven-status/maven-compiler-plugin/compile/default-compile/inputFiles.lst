@@ -1,0 +1,9 @@
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/entities/Customer.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/enums/OperationType.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/entities/BankAccount.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/enums/AccountStatus.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/enums/AccountCurrency.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/entities/AccountOperation.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/EbankingBackendApplication.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/entities/SavingAccount.java
+/Users/stephanekoman/Documents/Projets/ecommerce/ebanking-backend/src/main/java/org/skoman/ebankingbackend/entities/CurrentAccount.java

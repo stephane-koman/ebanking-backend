@@ -1,0 +1,12 @@
+org/skoman/ebankingbackend/entities/AccountOperation.class
+org/skoman/ebankingbackend/entities/Customer$CustomerBuilder.class
+org/skoman/ebankingbackend/EbankingBackendApplication.class
+org/skoman/ebankingbackend/enums/OperationType.class
+org/skoman/ebankingbackend/entities/Customer.class
+org/skoman/ebankingbackend/entities/BankAccount$BankAccountBuilder.class
+org/skoman/ebankingbackend/enums/AccountStatus.class
+org/skoman/ebankingbackend/entities/CurrentAccount.class
+org/skoman/ebankingbackend/entities/AccountOperation$AccountOperationBuilder.class
+org/skoman/ebankingbackend/enums/AccountCurrency.class
+org/skoman/ebankingbackend/entities/BankAccount.class
+org/skoman/ebankingbackend/entities/SavingAccount.class
