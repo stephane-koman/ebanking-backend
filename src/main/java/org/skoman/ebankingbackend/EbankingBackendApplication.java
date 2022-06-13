@@ -1,13 +1,17 @@
 package org.skoman.ebankingbackend;
 
-import org.skoman.ebankingbackend.entities.CurrentAccount;
-import org.skoman.ebankingbackend.entities.Customer;
-import org.skoman.ebankingbackend.entities.SavingAccount;
+import org.skoman.ebankingbackend.dtos.CustomerDTO;
+import org.skoman.ebankingbackend.entities.*;
 import org.skoman.ebankingbackend.enums.AccountCurrency;
 import org.skoman.ebankingbackend.enums.AccountStatus;
-import org.skoman.ebankingbackend.repositories.AccountOperationRepository;
-import org.skoman.ebankingbackend.repositories.BankAccountRepository;
-import org.skoman.ebankingbackend.repositories.CustomerRepository;
+import org.skoman.ebankingbackend.enums.OperationType;
+import org.skoman.ebankingbackend.daos.AccountOperationDAO;
+import org.skoman.ebankingbackend.daos.BankAccountDAO;
+import org.skoman.ebankingbackend.daos.CustomerDAO;
+import org.skoman.ebankingbackend.exceptions.BankAccountBalanceNotSufficientException;
+import org.skoman.ebankingbackend.exceptions.BankAccountNotFoundException;
+import org.skoman.ebankingbackend.exceptions.CustomerNotFoundException;
+import org.skoman.ebankingbackend.services.BankAccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,18 +28,18 @@ public class EbankingBackendApplication {
         SpringApplication.run(EbankingBackendApplication.class, args);
     }
 
-    @Bean
-    CommandLineRunner start(CustomerRepository customerRepository, BankAccountRepository bankAccountRepository, AccountOperationRepository accountOperationRepository){
+    //@Bean
+    CommandLineRunner start(CustomerDAO customerDAO, BankAccountDAO bankAccountDAO, AccountOperationDAO accountOperationDAO){
         return args -> {
             Stream.of("Stephane", "Chris", "Franck").forEach(name -> {
                 Customer customer = Customer.builder()
                         .name(name)
                         .email((name + "@gmail.com").toLowerCase())
                         .build();
-                customerRepository.save(customer);
+                customerDAO.save(customer);
             });
 
-            customerRepository.findAll().forEach(cust -> {
+            customerDAO.findAll().forEach(cust -> {
                 CurrentAccount currentAccount = new CurrentAccount();
                 currentAccount.setId(UUID.randomUUID().toString());
                 currentAccount.setCurrency(AccountCurrency.EUR);
@@ -44,7 +48,7 @@ public class EbankingBackendApplication {
                 currentAccount.setCreatedAt(new Date());
                 currentAccount.setCustomer(cust);
                 currentAccount.setOverDraft(9000);
-                bankAccountRepository.save(currentAccount);
+                bankAccountDAO.save(currentAccount);
 
                 SavingAccount savingAccount = new SavingAccount();
                 savingAccount.setId(UUID.randomUUID().toString());
@@ -54,7 +58,59 @@ public class EbankingBackendApplication {
                 savingAccount.setCreatedAt(new Date());
                 savingAccount.setCustomer(cust);
                 savingAccount.setInterestRate(5.5);
-                bankAccountRepository.save(savingAccount);
+                bankAccountDAO.save(savingAccount);
+            });
+
+            bankAccountDAO.findAll().forEach(acc -> {
+                for (int i=0; i < 10; i++) {
+                    AccountOperation accountOperation = AccountOperation.builder()
+                            .operationDate(new Date())
+                            .amount(Math.random() * 12000)
+                            .type(Math.random() > 0.5 ? OperationType.DEBIT : OperationType.CREDIT)
+                            .bankAccount(acc)
+                            .build();
+
+                    accountOperationDAO.save(accountOperation);
+                }
+            });
+        };
+    }
+
+    @Bean
+    CommandLineRunner commandLineRunner(BankAccountService bankAccountService){
+        return args -> {
+            Stream.of("Stephane", "Chris", "Franck").forEach(name -> {
+                CustomerDTO customerDTO = new CustomerDTO();
+                customerDTO.setName(name);
+                customerDTO.setEmail((name + "@gmail.com").toLowerCase());
+
+                bankAccountService.saveCostumer(customerDTO);
+            });
+
+            bankAccountService.listCostumers().forEach(customer -> {
+                try {
+                    bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
+                    bankAccountService.saveSavingBankAccount(Math.random() * 90000, 5.5, customer.getId());
+                    bankAccountService.bankAccountList().forEach(bankAccount -> {
+                        for (int i=0; i < 10; i++) {
+                            if(Math.random() > 0.5){
+                                try {
+                                    bankAccountService.debit(bankAccount.getId(), Math.random() * 12000, "Debit account");
+                                } catch (BankAccountNotFoundException | BankAccountBalanceNotSufficientException e) {
+                                    e.printStackTrace();
+                                }
+                            }else {
+                                try {
+                                    bankAccountService.credit(bankAccount.getId(), Math.random() * 12000, "Credit account");
+                                } catch (BankAccountNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (CustomerNotFoundException e) {
+                    e.printStackTrace();
+                }
             });
         };
     }

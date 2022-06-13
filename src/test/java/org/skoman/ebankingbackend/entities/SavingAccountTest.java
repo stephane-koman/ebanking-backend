@@ -12,6 +12,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test unitaire de {@link SavingAccount}
+ */
 class SavingAccountTest {
     @Test
     void instantiate_SavingAccount_Class(){

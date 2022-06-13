@@ -8,6 +8,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test unitaire de {@link Customer}
+ */
 class CustomerTest {
     @Test
     void instantiate_Customer_Class(){

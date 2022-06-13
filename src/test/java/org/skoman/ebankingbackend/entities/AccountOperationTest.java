@@ -9,6 +9,9 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test unitaire de {@link AccountOperation}
+ */
 class AccountOperationTest {
 
     @Test
