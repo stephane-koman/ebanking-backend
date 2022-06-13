@@ -14,6 +14,7 @@ import org.skoman.ebankingbackend.daos.AccountOperationDAO;
 import org.skoman.ebankingbackend.daos.BankAccountDAO;
 import org.skoman.ebankingbackend.daos.CustomerDAO;
 import org.skoman.ebankingbackend.mappers.BankAccountMapper;
+import org.skoman.ebankingbackend.mappers.CustomerMapper;
 import org.skoman.ebankingbackend.services.BankAccountService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,16 +40,18 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountMapper bankAccountMapper;
 
+    private final CustomerMapper customerMapper;
+
     @Override
     public CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException {
         Customer customer = customerDAO.findById(customerId).orElseThrow(() ->new CustomerNotFoundException(customerId));
-        return bankAccountMapper.fromCustomer(customer);
+        return customerMapper.fromCustomer(customer);
     }
 
     @Override
     public CustomerDTO saveCostumer(CustomerDTO customerDTO) {
-        Customer customer = customerDAO.save(bankAccountMapper.fromCustomerDTO(customerDTO));
-        return bankAccountMapper.fromCustomer(customer);
+        Customer customer = customerDAO.save(customerMapper.fromCustomerDTO(customerDTO));
+        return customerMapper.fromCustomer(customer);
     }
 
     @Override
@@ -57,8 +60,8 @@ public class BankAccountServiceImpl implements BankAccountService {
         if(!customerDAO.existsById(customerId)) throw new CustomerNotFoundException(customerId);
 
         customerDTO.setId(customerId);
-        Customer customerUpdated = customerDAO.save(bankAccountMapper.fromCustomerDTO(customerDTO));
-        return bankAccountMapper.fromCustomer(customerUpdated);
+        Customer customerUpdated = customerDAO.save(customerMapper.fromCustomerDTO(customerDTO));
+        return customerMapper.fromCustomer(customerUpdated);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     public List<CustomerDTO> listCostumers() {
-        return customerDAO.findAll().stream().map(bankAccountMapper::fromCustomer).collect(Collectors.toList());
+        return customerDAO.findAll().stream().map(customerMapper::fromCustomer).collect(Collectors.toList());
     }
 
     private <T extends BankAccount> void mappeBankAccount(T bankAccount, double initialBalance, Long customerId) throws CustomerNotFoundException {
