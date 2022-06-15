@@ -12,6 +12,7 @@ import org.skoman.ebankingbackend.exceptions.BankAccountBalanceNotSufficientExce
 import org.skoman.ebankingbackend.exceptions.BankAccountNotFoundException;
 import org.skoman.ebankingbackend.exceptions.CustomerNotFoundException;
 import org.skoman.ebankingbackend.services.BankAccountService;
+import org.skoman.ebankingbackend.services.CustomerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -77,17 +78,17 @@ public class EbankingBackendApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(BankAccountService bankAccountService){
+    CommandLineRunner commandLineRunner(BankAccountService bankAccountService, CustomerService customerService){
         return args -> {
             Stream.of("Stephane", "Chris", "Franck").forEach(name -> {
                 CustomerDTO customerDTO = new CustomerDTO();
                 customerDTO.setName(name);
                 customerDTO.setEmail((name + "@gmail.com").toLowerCase());
 
-                bankAccountService.saveCostumer(customerDTO);
+                customerService.saveCostumer(customerDTO);
             });
 
-            bankAccountService.listCostumers().forEach(customer -> {
+            customerService.searchCustomers(0, 3).getCustomerDTOS().forEach(customer -> {
                 try {
                     bankAccountService.saveCurrentBankAccount(Math.random() * 90000, 9000, customer.getId());
                     bankAccountService.saveSavingBankAccount(Math.random() * 90000, 5.5, customer.getId());

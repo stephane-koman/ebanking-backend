@@ -29,11 +29,6 @@ public class BankAccountController {
         return bankAccountService.bankAccountList();
     }
 
-    @GetMapping("/{accountId}/operations")
-    public List<AccountOperationDTO> getHistory(@PathVariable(name = "accountId") String accountId){
-        return bankAccountService.getHistory(accountId);
-    }
-
     @GetMapping("/{accountId}/pageOperations")
     public AccountHistoryDTO getAccountHistory(
             @PathVariable(name = "accountId") String accountId,

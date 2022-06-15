@@ -16,6 +16,7 @@ import org.skoman.ebankingbackend.daos.CustomerDAO;
 import org.skoman.ebankingbackend.mappers.BankAccountMapper;
 import org.skoman.ebankingbackend.mappers.CustomerMapper;
 import org.skoman.ebankingbackend.services.BankAccountService;
+import org.skoman.ebankingbackend.utils.MappeDTOData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -41,39 +42,6 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final BankAccountMapper bankAccountMapper;
 
     private final CustomerMapper customerMapper;
-
-    @Override
-    public CustomerDTO getCustomer(Long customerId) throws CustomerNotFoundException {
-        Customer customer = customerDAO.findById(customerId).orElseThrow(() ->new CustomerNotFoundException(customerId));
-        return customerMapper.fromCustomer(customer);
-    }
-
-    @Override
-    public CustomerDTO saveCostumer(CustomerDTO customerDTO) {
-        Customer customer = customerDAO.save(customerMapper.fromCustomerDTO(customerDTO));
-        return customerMapper.fromCustomer(customer);
-    }
-
-    @Override
-    public CustomerDTO updateCostumer(Long customerId, CustomerDTO customerDTO) throws CustomerNotFoundException {
-
-        if(!customerDAO.existsById(customerId)) throw new CustomerNotFoundException(customerId);
-
-        customerDTO.setId(customerId);
-        Customer customerUpdated = customerDAO.save(customerMapper.fromCustomerDTO(customerDTO));
-        return customerMapper.fromCustomer(customerUpdated);
-    }
-
-    @Override
-    public void deleteCustomer(Long customerId) throws CustomerNotFoundException {
-        if(!customerDAO.existsById(customerId)) throw new CustomerNotFoundException(customerId);
-        customerDAO.deleteById(customerId);
-    }
-
-    @Override
-    public List<CustomerDTO> listCostumers() {
-        return customerDAO.findAll().stream().map(customerMapper::fromCustomer).collect(Collectors.toList());
-    }
 
     private <T extends BankAccount> void mappeBankAccount(T bankAccount, double initialBalance, Long customerId) throws CustomerNotFoundException {
         Customer customer = customerDAO.findById(customerId).orElse(null);
@@ -179,6 +147,11 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    public BankAccountSearchDTO searchBankAccounts(int page, int size) {
+        return null;
+    }
+
+    @Override
     public List<AccountOperationDTO> getHistory(String accountId) {
         List<AccountOperation> accountOperations = accountOperationDAO.findByBankAccountId(accountId);
         return accountOperations.stream().map(bankAccountMapper::fromAccountOperation).collect(Collectors.toList());
@@ -194,9 +167,8 @@ public class BankAccountServiceImpl implements BankAccountService {
         accountHistoryDTO.setAccountId(accountId);
         accountHistoryDTO.setBalance(bankAccount.getBalance());
         accountHistoryDTO.setAccountOperationDTOS(accountOperationDTOS);
-        accountHistoryDTO.setPageSize(size);
-        accountHistoryDTO.setCurrentPage(page);
-        accountHistoryDTO.setTotalPages(accountOperations.getTotalPages());
+
+        MappeDTOData.mappePagination(accountHistoryDTO, size, page, accountOperations.getTotalPages());
 
         return accountHistoryDTO;
     }
